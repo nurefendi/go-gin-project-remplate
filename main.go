@@ -4,14 +4,30 @@ import (
 	"crowdfounding/handler"
 	"crowdfounding/user"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
+// use godot package to load/read the .env file and
+// return the value of the key
+func goDotEnvVariable(key string) string {
+
+	// load .env file
+	err := godotenv.Load(".env")
+  
+	if err != nil {
+	  log.Fatalf("Error loading .env file")
+	}
+	return os.Getenv(key)
+  }
+  
+
 func main() {
-	dsn := "root:@tcp(127.0.0.1:3306)/crowdfounding?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := goDotEnvVariable("datasource")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -24,7 +40,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
-	api := router.Group("/api/v1")
+	api := router.Group(goDotEnvVariable("path"))
 
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/login", userHandler.Login)
