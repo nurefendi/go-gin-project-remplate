@@ -72,5 +72,8 @@ func (h *UserHandler) Login(c *gin.Context){
 	forater := user.FormatResponse(loggedUser, "toket")
 	response = helper.APIResponse(msg.Success, http.StatusOK, msg.Success, forater,nil)
 	c.JSON(http.StatusOK, response)
+}
 
+func (h *UserHandler) EmailChecker(c *gin.Context){
+	
 }

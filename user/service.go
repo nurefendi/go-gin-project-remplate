@@ -67,3 +67,20 @@ func (s *service) Login(input LoginInput) (User, error) {
 
 	return user, nil
 }
+
+func (s *service) EmailChecker(input EmailCheckerInput) (string, error){
+	email := input.Email
+
+	user, err := s.repository.FindByEmail(email)
+
+	if err != nil {
+		return err.Error(), err
+	}
+
+	if user.IdUser != 0 {
+		return user.Email, errors.New("Email already register")
+	}
+
+	return "", nil
+
+}

@@ -14,7 +14,7 @@ import (
 
 // use godot package to load/read the .env file and
 // return the value of the key
-func goDotEnvVariable(key string) string {
+func env(key string) string {
 
 	// load .env file
 	err := godotenv.Load(".env")
@@ -27,7 +27,7 @@ func goDotEnvVariable(key string) string {
   
 
 func main() {
-	dsn := goDotEnvVariable("datasource")
+	dsn := env("DB_USER")+":"+env("DB_PASS")+"@tcp("+env("DB_HOST")+":"+env("DB_PORT")+")/"+env("DB_NAME")+"?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -40,11 +40,11 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
-	api := router.Group(goDotEnvVariable("path"))
+	api := router.Group(env("path"))
 
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/login", userHandler.Login)
 
-	router.Run()
+	router.Run(env("host")+":"+env("port"))
 
 }
