@@ -1,27 +1,30 @@
-package user
+package service
 
 import (
+	"crowdfounding/dto/request"
+	"crowdfounding/entity"
+	"crowdfounding/repository"
 	"errors"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type Service interface {
-	RegisterUser(input RegisterInput) (error)
-	Login(input LoginInput) (User, error)
+type UserService interface {
+	RegisterUser(input request.RegisterInput) (error)
+	Login(input request.LoginInput) (entity.User, error)
 }
 
-type service struct {
-	repository Repository
+type userService struct {
+	repository repository.Repository
 }
 
-func NewService(repository Repository) *service {
-	return &service{repository}
+func NewUserService() *userService {
+	return &userService{repository.NewRepository()}
 }
 
-func (s *service) RegisterUser(input RegisterInput) (error) {
-	user := User{}
+func (s *userService) RegisterUser(input request.RegisterInput) (error) {
+	user := entity.User{}
 
 	user.FullName = input.Name
 	user.Email = input.Email
@@ -47,7 +50,7 @@ func (s *service) RegisterUser(input RegisterInput) (error) {
 	return nil
 }
 
-func (s *service) Login(input LoginInput) (User, error) {
+func (s *userService) Login(input request.LoginInput) (entity.User, error) {
 	email := input.Email
 	password := input.Password
 
@@ -57,7 +60,7 @@ func (s *service) Login(input LoginInput) (User, error) {
 	}
 
 	if user.IdUser == 0 {
-		return user, errors.New("No user found on that email")
+		return user, errors.New("no user found on that email")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
@@ -68,7 +71,7 @@ func (s *service) Login(input LoginInput) (User, error) {
 	return user, nil
 }
 
-func (s *service) EmailChecker(input EmailCheckerInput) (string, error){
+func (s *userService) EmailChecker(input request.EmailCheckerInput) (string, error){
 	email := input.Email
 
 	user, err := s.repository.FindByEmail(email)
@@ -78,7 +81,7 @@ func (s *service) EmailChecker(input EmailCheckerInput) (string, error){
 	}
 
 	if user.IdUser != 0 {
-		return user.Email, errors.New("Email already register")
+		return user.Email, errors.New("email already register")
 	}
 
 	return "", nil

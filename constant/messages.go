@@ -1,4 +1,4 @@
-package msg
+package constant
 
 const (
 	Success = "success"
