@@ -10,14 +10,12 @@ type UserResponse struct {
 	Token      string `json:"token"`
 }
 
-func FormatResponse(user entity.User, token string) UserResponse {
-	formater := UserResponse{
+func UserResponseMapper(user entity.User, token string) UserResponse {
+	return UserResponse{
 		UserId:     user.IdUser,
 		Name:       user.FullName,
 		Occupation: user.Occupation,
 		Email:      user.Email,
 		Token:      token,
 	}
-
-	return formater
 }

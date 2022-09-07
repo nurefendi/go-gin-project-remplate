@@ -75,7 +75,7 @@ func (h *UserController) Login(c *gin.Context) {
 	}
 
 	result.SetMeta(http.StatusOK, constant.Success, constant.Success)
-	result.SetData(response.FormatResponse(loggedUser, "toket"))
+	result.SetData(response.UserResponseMapper(loggedUser, "toket"))
 	c.JSON(http.StatusOK, result)
 }
 
