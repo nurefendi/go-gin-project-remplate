@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"crowdfounding/constant"
-	"crowdfounding/dto/request"
-	"crowdfounding/dto/response"
-	"crowdfounding/helper"
-	"crowdfounding/service"
+	"go-gin-template/src/constant"
+	"go-gin-template/src/dto/request"
+	"go-gin-template/src/dto/response"
+	"go-gin-template/src/helper"
+	"go-gin-template/src/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

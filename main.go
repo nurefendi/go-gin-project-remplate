@@ -1,8 +1,8 @@
 package main
 
 import (
-	"crowdfounding/config"
-	"crowdfounding/routers"
+	"go-gin-template/src/config"
+	"go-gin-template/src/routers"
 	"os"
 
 	"github.com/gin-gonic/gin"

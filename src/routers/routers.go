@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"crowdfounding/controllers"
+	controller "go-gin-template/src/controllers"
 
 	"github.com/gin-gonic/gin"
 )

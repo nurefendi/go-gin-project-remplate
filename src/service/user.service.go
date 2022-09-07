@@ -1,10 +1,10 @@
 package service
 
 import (
-	"crowdfounding/dto/request"
-	"crowdfounding/entity"
-	"crowdfounding/repository"
 	"errors"
+	"go-gin-template/src/dto/request"
+	"go-gin-template/src/entity"
+	"go-gin-template/src/repository"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"

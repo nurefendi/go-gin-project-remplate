@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"crowdfounding/config"
-	"crowdfounding/entity"
+	"go-gin-template/src/config"
+	"go-gin-template/src/entity"
 
 	"gorm.io/gorm"
 )

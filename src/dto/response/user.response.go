@@ -1,6 +1,6 @@
 package response
 
-import "crowdfounding/entity"
+import "go-gin-template/src/entity"
 
 type UserResponse struct {
 	UserId     int    `json:"userId"`
