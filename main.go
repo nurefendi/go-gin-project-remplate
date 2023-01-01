@@ -15,7 +15,6 @@ func main() {
 	config.Env()
 	gin.SetMode(os.Getenv("SET_MODE"))
 	config.ConnectDatabase()
-	// config.InitKafkaClient()
 
 	router := gin.Default()
 	api := router.Group(os.Getenv("path"))

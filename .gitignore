@@ -4,3 +4,6 @@ images/*
 
 go.mod
 go.sum
+
+.vscode
+.vscode/*
