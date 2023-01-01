@@ -50,6 +50,21 @@ func AuthMidleware(c *gin.Context) {
 		return
 	}
 
+	authService := service.NewAuthService()
+	authResponse, err := authService.CheckLogin(claim["userId"].(string))
+	if err != nil {
+		result.SetMeta(http.StatusUnauthorized, constant.Failed, constant.Unautorized)
+		result.SetErrors(gin.H{"message": constant.Unautorized})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, result)
+		return
+	}
+	if authResponse.Token == "" {
+		result.SetMeta(http.StatusUnauthorized, constant.Failed, constant.Unautorized)
+		result.SetErrors(gin.H{"message": constant.Unautorized})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, result)
+		return
+	}
+
 	currentLoggin := helper.JwtPayload{
 		UserId: claim["userId"].(string),
 		Email:  claim["email"].(string),
