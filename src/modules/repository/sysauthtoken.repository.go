@@ -10,6 +10,7 @@ import (
 type SysAuthTokenRepository interface {
 	FindByUserId(userId string) (entity.SysAuthToken, error)
 	Save(data entity.SysAuthToken) error
+	DeleteByUserId(userId string) error
 }
 
 type sysAuthTokenRepository struct {
@@ -33,6 +34,15 @@ func (r sysAuthTokenRepository) FindByUserId(userId string) (entity.SysAuthToken
 
 func (r sysAuthTokenRepository) Save(data entity.SysAuthToken) error {
 	err := r.db.Table("sys_auth_token").Create(&data).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r sysAuthTokenRepository) DeleteByUserId(userId string) error {
+	var sysAuthToken entity.SysAuthToken
+	err := r.db.Table("sys_auth_token").Where("user_id = ?", userId).Delete(&sysAuthToken).Error
 	if err != nil {
 		return err
 	}

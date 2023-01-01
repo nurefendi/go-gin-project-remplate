@@ -90,3 +90,37 @@ func (ctrl AuthController) Me(c *gin.Context){
 	result.SetData(middleware.CURRENT_USER)
 	c.JSON(http.StatusOK, result)
 }
+
+func (ctrl AuthController) LogOut(c *gin.Context) {
+	result := helper.NewRestResult()
+	ctrl.authService.LogLogin(entity.SysAuthLog{
+		LogId: strconv.FormatInt(time.Now().UnixMilli(), 10),
+		User: middleware.CURRENT_USER.UserId,
+		WaktuLogin: time.Now(),
+		Ip: c.ClientIP(),
+		UserAgent: c.Request.UserAgent(),
+		Keterangan: "Pengguna keluar dari sistem.",
+		Status: "success",
+	})
+
+	err := ctrl.authService.LogOut(middleware.CURRENT_USER.UserId)
+	if err != nil {
+		result.SetMeta(http.StatusBadRequest, constant.Failed, constant.LogOutFailed)
+		result.SetErrors(gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, result)
+		return
+	}
+
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "token",
+		Value:    "",
+		MaxAge:   -1,
+		Path:     "/",
+		Secure: false,
+		HttpOnly: true,
+	})
+
+	
+	result.SetMeta(http.StatusOK, constant.Success, constant.Success)
+	c.JSON(http.StatusOK, result)
+}

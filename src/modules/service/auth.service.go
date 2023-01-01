@@ -20,6 +20,7 @@ type AuthService interface {
 	CheckLoginAttempts(email string, maxTry int16) bool
 	CheckLogin(userId string) (response.AuthResponse, error)
 	LogLogin(log entity.SysAuthLog)
+	LogOut(userId string) error
 }
 
 type authService struct {
@@ -142,6 +143,14 @@ func (sv authService) CheckLogin(userId string) (response.AuthResponse, error) {
 
 func (sv authService) LogLogin(log entity.SysAuthLog){
 	sv.sysAuthLogRepository.Save(log)
+}
+
+func (sv authService) LogOut(userId string) error{
+	err := sv.sysAuthTokenRepository.DeleteByUserId(userId)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // func hashPassword(password string) (string, error) {
