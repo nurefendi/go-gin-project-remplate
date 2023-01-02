@@ -5,6 +5,7 @@ import (
 	"go-gin-template/src/routers"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	config.ConnectDatabase()
 
 	router := gin.Default()
+	router.Use(cors.Default())
 	api := router.Group(os.Getenv("path"))
 	api.GET("/", func(c *gin.Context) {
 		c.String(200, "Welcome to api v1")
