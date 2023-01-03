@@ -2,7 +2,7 @@ package repository
 
 import (
 	"go-gin-template/src/config"
-	"go-gin-template/src/modules/entity"
+	"go-gin-template/src/entity"
 
 	"gorm.io/gorm"
 )

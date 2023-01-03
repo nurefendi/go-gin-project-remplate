@@ -4,7 +4,7 @@ import (
 	"errors"
 	"go-gin-template/src/constant"
 	"go-gin-template/src/helper"
-	"go-gin-template/src/modules/service"
+	"go-gin-template/src/service"
 	"net/http"
 	"strings"
 

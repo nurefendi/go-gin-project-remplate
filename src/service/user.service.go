@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"go-gin-template/src/modules/dto/request"
-	"go-gin-template/src/modules/entity"
-	"go-gin-template/src/modules/repository"
+	"go-gin-template/src/dto/request"
+	"go-gin-template/src/entity"
+	"go-gin-template/src/repository"
 )
 
 type UserService interface {

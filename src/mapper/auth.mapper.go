@@ -1,8 +1,8 @@
 package mapper
 
 import (
-	"go-gin-template/src/modules/dto/response"
-	"go-gin-template/src/modules/entity"
+	"go-gin-template/src/dto/response"
+	"go-gin-template/src/entity"
 	"time"
 )
 
