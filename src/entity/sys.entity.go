@@ -26,7 +26,7 @@ type SysUser struct {
 	Status       *int       `gorm:"column:status"`
 	LastLogin    *time.Time `gorm:"column:last_login;not null"`
 	RegisteredBy *string    `gorm:"column:registered_by;size:45"`
-	Mdd          *time.Time `gorm:"column:mdd;not null"`
+	ModifiedDate *time.Time `gorm:"column:mdd;not null"`
 }
 
 type SysAuthLog struct {
