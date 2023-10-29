@@ -1,89 +1,89 @@
 package service
 
-import (
-	"errors"
-	"go-gin-template/src/dto/request"
-	"go-gin-template/src/entity"
-	"go-gin-template/src/repository"
-	"time"
+// import (
+// 	"errors"
+// 	"go-gin-template/src/dto/request"
+// 	"go-gin-template/src/entity"
+// 	"go-gin-template/src/repository"
+// 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-)
+// 	"golang.org/x/crypto/bcrypt"
+// )
 
-type UserService interface {
-	RegisterUser(input request.RegisterInput) (error)
-	Login(input request.LoginInput) (entity.User, error)
-}
+// type UserService interface {
+// 	RegisterUser(input request.RegisterInput) (error)
+// 	Login(input request.LoginInput) (entity.User, error)
+// }
 
-type userService struct {
-	repository repository.Repository
-}
+// type userService struct {
+// 	repository repository.Repository
+// }
 
-func NewUserService() *userService {
-	return &userService{repository.NewRepository()}
-}
+// func NewUserService() *userService {
+// 	return &userService{repository.NewRepository()}
+// }
 
-func (s *userService) RegisterUser(input request.RegisterInput) (error) {
-	user := entity.User{}
+// func (s *userService) RegisterUser(input request.RegisterInput) (error) {
+// 	user := entity.User{}
 
-	user.FullName = input.Name
-	user.Email = input.Email
-	user.Occupation = input.Occupation
-	user.Avatar = "default.png"
-	user.CreatedDate = time.Now()
-	user.CreatedBy = "aplikasi"
-	user.Role = "user"
-	user.Token = "token123"
+// 	user.FullName = input.Name
+// 	user.Email = input.Email
+// 	user.Occupation = input.Occupation
+// 	user.Avatar = "default.png"
+// 	user.CreatedDate = time.Now()
+// 	user.CreatedBy = "aplikasi"
+// 	user.Role = "user"
+// 	user.Token = "token123"
 	
-	passwordHas, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
-	if err != nil {
-		return err
-	}
-	user.Password = string(passwordHas)
+// 	passwordHas, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	user.Password = string(passwordHas)
 
-	_, errr := s.repository.Save(user)
+// 	_, errr := s.repository.Save(user)
 
-	if errr != nil {
-		return err
-	}
+// 	if errr != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
-func (s *userService) Login(input request.LoginInput) (entity.User, error) {
-	email := input.Email
-	password := input.Password
+// func (s *userService) Login(input request.LoginInput) (entity.User, error) {
+// 	email := input.Email
+// 	password := input.Password
 
-	user, err := s.repository.FindByEmail(email)
-	if err != nil {
-		return user, err
-	}
+// 	user, err := s.repository.FindByEmail(email)
+// 	if err != nil {
+// 		return user, err
+// 	}
 
-	if user.IdUser == 0 {
-		return user, errors.New("no user found on that email")
-	}
+// 	if user.IdUser == 0 {
+// 		return user, errors.New("no user found on that email")
+// 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
-		return user, err
-	}
+// 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+// 	if err != nil {
+// 		return user, err
+// 	}
 
-	return user, nil
-}
+// 	return user, nil
+// }
 
-func (s *userService) EmailChecker(input request.EmailCheckerInput) (string, error){
-	email := input.Email
+// func (s *userService) EmailChecker(input request.EmailCheckerInput) (string, error){
+// 	email := input.Email
 
-	user, err := s.repository.FindByEmail(email)
+// 	user, err := s.repository.FindByEmail(email)
 
-	if err != nil {
-		return err.Error(), err
-	}
+// 	if err != nil {
+// 		return err.Error(), err
+// 	}
 
-	if user.IdUser != 0 {
-		return user.Email, errors.New("email already register")
-	}
+// 	if user.IdUser != 0 {
+// 		return user.Email, errors.New("email already register")
+// 	}
 
-	return "", nil
+// 	return "", nil
 
-}
+// }
