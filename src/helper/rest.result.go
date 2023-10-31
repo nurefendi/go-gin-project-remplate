@@ -1,42 +1,44 @@
 package helper
 
+import "github.com/gin-gonic/gin"
 
 type response struct {
-	Meta  meta        `json:"meta"`
-	Data  interface{} `json:"data"`
-	Errors interface{} `json:"error"`
+	Meta meta  `json:"meta"`
+	Data gin.H `json:"data"`
 }
 
 type meta struct {
-	Message string `json:"message"`
-	Code    int    `json:"code"`
-	Status  string `json:"status"`
+	Message interface{} `json:"message"`
+	Status  string      `json:"status"`
 }
-
 
 func NewRestResult() *response {
 	return &response{}
 }
 
-func (b *response) SetMeta(code int, status string, msg string) *response{
+func (b *response) SetMeta(status string, msg interface{}) *response {
 	b.Meta = meta{
 		Message: msg,
-		Code: code,
-		Status: status,
+		Status:  status,
 	}
 
 	return b
 }
 
-func (b *response) SetData(data interface{})  *response {
+func (b *response) SetData(data gin.H) *response {
 	b.Data = data
 	return b
 }
 
-func (b *response) SetErrors(err interface{}) *response {
-	b.Errors = err
-	return b
+func ResponseWithJson(status string, msg interface{}, data gin.H) *response {
+	response := NewRestResult()
+	response.SetMeta(status, msg)
+	response.SetData(data)
+	return response
 }
 
-
-
+func ResponseValidationError(status string, err error) *response {
+	response := NewRestResult()
+	response.SetMeta(status, FormatValidationError(err))
+	return response
+}

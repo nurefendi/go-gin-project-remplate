@@ -1,0 +1,191 @@
+{{define "css"}}
+<link rel="stylesheet" href="/components/jquery-form-validator-net/form-validator/theme-default.min.css">
+<link rel="stylesheet" href="/components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+{{end}}
+{{define "content"}}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <div class="box-tools">
+                    <div class="input-group input-group-sm hidden-xs" style="width: 400px;">
+                        <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        </div>
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-block btn-primary" data-toggle="modal"
+                                data-target="#modal-tambah"><i class="fa fa-plus"></i> Portal
+                                Baru</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="tportal" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nama Portal</th>
+                            <th>NO. Portal</th>
+                            <th>Deskripsi</th>
+                            <th>Base URL</th>
+                            <th width="90">#Aksi</th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.box-body -->
+
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "modal"}}
+<!--MODAL FORM TAMBAH-->
+<div class="modal fade" id="modal-tambah" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus-circle"></i> TAMBAH PORTAL</h4>
+            </div>
+            <div class="modal-body">
+                <!-- /.box-header -->
+                <form class="form-horizontal" id="form-tambah" onsubmit="return false">
+                    <!--<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">-->
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Nama Portal *</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="Nama Portal" data-validation="required"
+                                    type="text" name="portal_name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Nomor Portal *</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="Nomor Portal" data-validation="required number"
+                                    type="text" name="portal_number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Deskripsi Portal *</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="Deskripsi Portal" data-validation="required"
+                                    type="text" name="portal_desc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">URL</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="URL" type="text" name="portal_link">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Meta Title *</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="Meta Name" data-validation="required"
+                                    type="text" name="portal_title">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Meta Tags *</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="Meta Tags" data-validation="required"
+                                    type="text" name="portal_tag">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Meta Description *</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" placeholder="Meta Description" data-validation="required"
+                                    type="text" name="portal_meta_desc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">*) Wajib Diisi</label>
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-info pull-right tombol-simpan">SIMPAN</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "javascript"}}
+<script src="/components/jquery-form-validator-net/form-validator/jquery.form-validator.min.js"></script>
+<script src="/components/jquery-form-validator-net/form-validator/lang/id.js"></script>
+<script src="/components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script>
+    dtportal = $("#tportal").DataTable({
+        "ajax": {
+            "url": "/api/backend/portal",
+            "type": "GET",
+            "dataSrc": "data.data"
+        },
+        "bFilter": false,
+        "paging": true,
+        "columns": [
+            { "data": "PortalName" },
+            { "data": "PortalNumber", "className": "text-center" },
+            { "data": "PortalDesc" },
+            { "data": "PortalLink" },
+            {
+                "data": null,
+                "render": function (data, type, row) {
+                    // 'data' is the row object for this column
+                    // 'type' specifies the type of rendering (display, filter, sort, type)
+                    // 'row' is the full row data
+
+                    // Generate your custom content here
+                    return '<div class="btn-group"> ' +
+                        ' <button type="button" class="btn btn-xs btn-info tombol-edit"><i class="fa fa-edit"></i> Edit</button>' +
+                        '<button type="button" class="btn btn-xs btn-danger tombol-hapus"><i class="fa fa-trash"></i> Delete</button> </div>';
+                }
+            }
+
+        ]
+    });
+
+    $("#tportal").on('click', 'tbody button.tombol-edit', function () {
+        var data = dtportal.row($(this).parents('tr')).data();
+        $('#modal-tambah').modal("show")
+        // 'data' now contains the data of the clicked row
+
+        // Perform actions with the data
+        console.log('Button clicked with data:', data);
+    });
+
+    $("#tportal").on('click', 'tbody button.tombol-hapus', function () {
+        var data = dtportal.row($(this).parents('tr')).data();
+        // 'data' now contains the data of the clicked row
+
+        // Perform actions with the data
+        console.log('Button clicked with data hapus:', data);
+    });
+
+    /* Reset Form after modal is hide */
+    $('#modal-tambah').on('hidden.bs.modal', function () {
+        $('#form-tambah')[0].reset();
+    });
+    $('#modal-tambah').on('shown.bs.modal', function () {
+        $('#form-tambah [name="portal_name"]').focus();
+    });
+    $.validate({
+        lang: 'id'
+    });
+</script>
+{{end}}

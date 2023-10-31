@@ -1,11 +1,10 @@
 package routers
 
 import (
+	"go-gin-template/src/helper"
 	"net/http"
 	"os"
-	"path/filepath"
 
-	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -21,12 +20,13 @@ func HandleRouter() {
 		})
 	})
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(200, "sys_admin.html", nil)
-	})
-
+	// backend web
+	SetWebBackendRouters(router.Group("/backend"))
+	// backend api
+	SetApiBackendRouters(router.Group("/api/backend"))
+	
 	router.Use(static.Serve("/components", static.LocalFile("./src/templates/assets/component", true)))
-	router.HTMLRender = loadTemplates("./src/templates")
+	router.HTMLRender = helper.LoadTemplates("./src/templates")
 	router.Static("/css", "./src/templates/assets/css")
 	router.Static("/js", "./src/templates/assets/js")
 	router.Static("/images", "./src/templates/assets/img")
@@ -41,25 +41,4 @@ func HandleRouter() {
 	log.Error(router.Run(":" + port))
 }
 
-func loadTemplates(templatesDir string) multitemplate.Renderer {
-	r := multitemplate.NewRenderer()
 
-	layouts, err := filepath.Glob(templatesDir + "/layouts/*")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	includes, err := filepath.Glob(templatesDir + "/content/**/*")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	// Generate our templates map from our layouts/ and includes/ directories
-	for _, include := range includes {
-		layoutCopy := make([]string, len(layouts))
-		copy(layoutCopy, layouts)
-		files := append(layoutCopy, include)
-		r.AddFromFiles(filepath.Base(include), files...)
-	}
-	return r
-}
