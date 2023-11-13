@@ -11,6 +11,7 @@ type (
 
 	SysPortal interface {
 		GetListPortal(data request.PortalListRequest) ([]entity.SysPortal, error)
+		Delete(portalId uint) error
 	}
 )
 
@@ -24,4 +25,12 @@ func (u *sysPortalUsecase) GetListPortal(data request.PortalListRequest) ([]enti
 		return nil, err
 	}
 	return res, nil
+}
+
+func (p *sysPortalUsecase) Delete(portalId uint) error {
+	err := repository.DeletePortal(portalId)
+	if err != nil {
+		return err
+	}
+	return nil
 }

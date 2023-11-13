@@ -111,3 +111,12 @@ type SysUserGroup struct {
 	SysUser  SysUser  `gorm:"foreignKey:UserID;references:UserID;onUpdate:CASCADE;onDelete:CASCADE"`
 	SysGroup SysGroup `gorm:"foreignKey:GroupID;references:GroupID"`
 }
+type SysAuthToken struct {
+	Id          uint      `gorm:"column:id;primaryKey;autoIncrement"`
+	Token       string    `gorm:"column:token;not null"`
+	Validity    time.Time `gorm:"column:validity;not null"`
+	UserId      string    `gorm:"column:user_id;not null;size:18"`
+	GroupId     string    `gorm:"column:group_id;not null;size:18"`
+	CreatedBy   string    `gorm:"column:ctb;not null;size:255"`
+	CreatedDate time.Time `gorm:"column:ctd;not null"`
+}

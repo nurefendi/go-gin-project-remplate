@@ -29,3 +29,13 @@ func GetListPortal(request request.PortalListRequest) ([]entity.SysPortal, error
 	}
 	return sysPortal, nil
 }
+
+func DeletePortal(portalId uint) error {
+	conn := config.DBConn
+	var sysPortal entity.SysPortal
+	err := conn.Delete(&sysPortal, entity.SysPortal{PortalID: portalId}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

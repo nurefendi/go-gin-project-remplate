@@ -8,20 +8,10 @@
         <div class="box">
             <div class="box-header with-border">
                 <div class="box-tools">
-                    <div class="input-group input-group-sm hidden-xs" style="width: 400px;">
-                        <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+                    <button type="button" class="btn btn-block btn-primary" data-toggle="modal"
+                        data-target="#modal-tambah"><i class="fa fa-plus"></i> Portal
+                        Baru</button>
 
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                        </div>
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-block btn-primary" data-toggle="modal"
-                                data-target="#modal-tambah"><i class="fa fa-plus"></i> Portal
-                                Baru</button>
-                        </div>
-
-
-                    </div>
                 </div>
             </div>
             <!-- /.box-header -->
@@ -60,6 +50,7 @@
                 <!-- /.box-header -->
                 <form class="form-horizontal" id="form-tambah" onsubmit="return false">
                     <!--<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">-->
+                    <input type="hidden" name="id_portal">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Nama Portal *</label>
@@ -122,6 +113,27 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-default" data-backdrop="static">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Hapus Data ?</h4>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+          <button type="button" onclick="konfirmasihapus(this)" class="btn btn-danger tombol-confirm-hapus">Hapus</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 {{end}}
 
 {{define "javascript"}}
@@ -130,13 +142,19 @@
 <script src="/components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script>
-    dtportal = $("#tportal").DataTable({
+    var tablePortal = "#tportal"
+    var formModal = "#form-tambah"
+    var modal = "#modal-tambah"
+    var modalHapus = "#modal-default"
+    
+    
+    dtportal = $(tablePortal).DataTable({
         "ajax": {
             "url": "/api/backend/portal",
             "type": "GET",
             "dataSrc": "data.data"
         },
-        "bFilter": false,
+        "bFilter": true,
         "paging": true,
         "columns": [
             { "data": "PortalName" },
@@ -146,11 +164,6 @@
             {
                 "data": null,
                 "render": function (data, type, row) {
-                    // 'data' is the row object for this column
-                    // 'type' specifies the type of rendering (display, filter, sort, type)
-                    // 'row' is the full row data
-
-                    // Generate your custom content here
                     return '<div class="btn-group"> ' +
                         ' <button type="button" class="btn btn-xs btn-info tombol-edit"><i class="fa fa-edit"></i> Edit</button>' +
                         '<button type="button" class="btn btn-xs btn-danger tombol-hapus"><i class="fa fa-trash"></i> Delete</button> </div>';
@@ -160,32 +173,53 @@
         ]
     });
 
-    $("#tportal").on('click', 'tbody button.tombol-edit', function () {
+    $(tablePortal).on('click', 'tbody button.tombol-edit', function () {
         var data = dtportal.row($(this).parents('tr')).data();
-        $('#modal-tambah').modal("show")
-        // 'data' now contains the data of the clicked row
+        $(modal+ ' div.modal-header h4.modal-title').html('<i class="fa fa-edit"></i> EDIT PORTAL')
 
-        // Perform actions with the data
-        console.log('Button clicked with data:', data);
+        $(formModal+ ' input[name="id_portal"]').val(data.PortalID)
+        $(formModal+ ' input[name="portal_name"]').val(data.PortalName)
+        $(formModal+ ' input[name="portal_number"]').val(data.PortalNumber)
+        $(formModal+ ' input[name="portal_desc"]').val(data.PortalDesc)
+        $(formModal+ ' input[name="portal_link"]').val(data.PortalLink)
+        $(formModal+ ' input[name="portal_title"]').val(data.MetaTitle)
+        $(formModal+ ' input[name="portal_tag"]').val(data.MetaTag)
+        $(formModal+ ' input[name="portal_meta_desc"]').val(data.MetaDesc)
+        $(modal).modal("show")
     });
 
-    $("#tportal").on('click', 'tbody button.tombol-hapus', function () {
+    $(tablePortal).on('click', 'tbody button.tombol-hapus', function () {
         var data = dtportal.row($(this).parents('tr')).data();
-        // 'data' now contains the data of the clicked row
-
-        // Perform actions with the data
-        console.log('Button clicked with data hapus:', data);
+        $(modalHapus+ ' div.modal-body').html('<p>Anda akan menghapus : ' + data.PortalName +'</p>')
+        $(modalHapus+ ' div.modal-footer button.tombol-confirm-hapus').attr("data-id", data.PortalID)
+        $(modalHapus).modal("show")
     });
 
     /* Reset Form after modal is hide */
-    $('#modal-tambah').on('hidden.bs.modal', function () {
-        $('#form-tambah')[0].reset();
+    $(modal).on('hidden.bs.modal', function () {
+        $(formModal)[0].reset();
+        $(modal+ ' div.modal-header h4.modal-title').html('<i class="fa fa-plus-circle"></i> TAMBAH PORTAL')
     });
-    $('#modal-tambah').on('shown.bs.modal', function () {
-        $('#form-tambah [name="portal_name"]').focus();
+    $(modal).on('shown.bs.modal', function () {
+        $(formModal +' [name="portal_name"]').focus();
     });
     $.validate({
         lang: 'id'
     });
+
+    function konfirmasihapus(value){
+        let dataid = $(value).attr("data-id")
+        $.ajax({
+            url : "/api/backend/portal/"+dataid,
+            type : "DELETE",
+            contentType : "application/json",
+            success : function () {
+                dtportal.ajax.reload(null, false);
+                setTimeout(function(){
+                    $(modalHapus).modal("hide")
+                }, 5000);
+            }
+        })
+    }
 </script>
 {{end}}
